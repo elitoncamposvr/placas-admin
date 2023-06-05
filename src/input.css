@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+    input[type=text],
+    input[type=email],
+    input[type=password] {
+        @apply py-2 px-4 border rounded-md;
+    }
+
+    input[type=text]::placeholder,
+    input[type=email]::placeholder,
+    input[type=password]::placeholder {
+        @apply text-slate-700;
+    }
+
+    select {
+        @apply py-2 px-4 border rounded-md;
+    }
+
+    .breadcrumb {
+        @apply text-sm font-semibold mb-3 border-b border-slate-300 text-slate-700 flex justify-between items-center;
+    }
+
+    .breadcrumb-title {
+        @apply font-semibold flex items-center;
+    }
+
+    .breadcrumb-icon {
+        @apply px-2;
+    }
+
+    .btn {
+        @apply bg-sky-950 text-white py-2 px-4 rounded-md;
+    }
+
+    .btn-secondary {
+        @apply bg-slate-50 text-sky-950 py-2 px-4 rounded-md;
+    }
+
+    .btn-cancel {
+        @apply bg-red-600 text-white py-2 px-4 rounded-md;
+    }
+
+    .menu-data {
+        @apply flex justify-between items-center py-1.5;
+    }
+
+    .table-header {
+        @apply w-full flex bg-slate-300 rounded-md py-2 px-4 font-semibold;
+    }
+
+    .table-data {
+        @apply w-full flex py-3 px-4 border-b border-slate-300;
+    }
+
+    .table-line{
+        @apply w-full flex;
+    }
+
+    .badge {
+        @apply text-xs text-white text-center rounded-md py-0.5 px-2;
+    }
+
+    .badge-pending {
+        @apply bg-slate-500;
+    }
+
+    .badge-progress {
+        @apply bg-amber-400 ;
+    }
+
+    .badge-success {
+        @apply bg-sky-600;
+    }
+
+    .badge-canceled {
+        @apply bg-red-600;
+    }
+
+    .pagination {
+        @apply w-full text-center bg-slate-300 rounded-md flex justify-center p-3;
+    }
+
+    .pagination-item {
+        @apply bg-slate-200 rounded-md py-1.5 px-3 mx-1;
+    }
+
+    .pagination-active {
+        @apply bg-sky-950 text-white;
+    }
+
+    .flash-info {
+        @apply w-full border-2 border-sky-700 p-3 bg-sky-50 flex justify-center rounded-md items-center my-5;
+    }
+
+    .card-field{
+        @apply w-full grid grid-cols-4 gap-x-3;
+    }
+
+    .card {
+        @apply bg-slate-300 rounded-md p-2.5;
+    }
+
+    .card-number{
+        @apply text-center text-3xl font-semibold text-sky-800 mt-3;
+    }
+
+    .card-description{
+        @apply text-center py-4;
+    }
+
+    footer{
+        @apply w-full text-center absolute bottom-0 py-2 bg-slate-300;
+    }
+
+    #title-print{
+        @apply hidden;
+    }
+
+}
