@@ -1,84 +1,61 @@
-<div class="content">
-	<div class="breadcrumb">
-		<h2>Aluno<i class="fas fa-angle-right fa-xs"></i>Resultados da Pesquisa</h2>
-
-		<span>
-			<a href="<?php echo BASE_URL; ?>students"><i class="fas fa-angle-double-left"></i> Voltar</a>
-		</span>
+<div class="breadcrumb">
+	<div class="breadcrumb-title">
+		<span>Despachantes</span>
+		<i class="fa-solid fa-angle-right breadcrumb-icon"></i>
+		<span>Resultado da Pesquisa</span>
 	</div>
-
-	<!-- Botões (Buttons) -->
-	<div class="menu_data">
-		<div class="menu_data--left">
-			<div>
-				<a class="btn btn--data-menu" href="<?php echo BASE_URL; ?>students/create">Novo</a>
-			</div>
-		</div>
-		<div class="menu_data--right">
-			<form class="form-search-right" action="<?php echo BASE_URL; ?>students/search">
-				<span class="mb-2 w-100"><input type="text" class="w-100" name="sp" id="sp" placeholder="Pesquisar Aluno" required></span>
-			</form>
-		</div>
-	</div>
-
-	<!-- Cabeçalho da Tabela (Table Header) -->
-	<?php if ($students) : ?>
-		<div class="table_header">
-			<div class="w-35">Nome do Aluno</div>
-			<div class="w-10">Série</div>
-			<div class="w-15">Turma</div>
-			<div class="w-20">Escola</div>
-			<div class="w-15">Avaliação</div>
-			<div class="w-5"></div>
-		</div>
-
-
-		<!-- Dados da Tabela (Table Data) -->
-		<?php foreach ($students as $c) : ?>
-			<div class="table_data">
-				<div class="table-35"><span class="table-title-mobile">Nome do Aluno:</span><?php echo $c['student_name']; ?></div>
-				<div class="table-10"><span class="table-title-mobile">Série:</span><?php echo $c['series_name']; ?>&ordf;</div>
-				<div class="table-15"><span class="table-title-mobile">Turma:</span><?php echo $c['name_class_students']; ?></div>
-				<div class="table-20"><span class="table-title-mobile">Escola:</span><?php echo $c['school_name']; ?></div>
-				<div class="table-15">
-					<span class="table-title-mobile">Avaliação:</span>
-					<?php if ($c['evaluation_stage'] < 1) {
-						echo '<span class="badge badge-pending">Pendente</span>';
-					} elseif ($c['evaluation_stage'] < 5) {
-						echo '<span class="badge badge-aproved">Em andamento</span>';
-					} else {
-						echo '<span class="badge badge-success">Concluído</span>';
-					} ?>
-				</div>
-				<div class="table-5 table-options txt-right">
-					<div class="dropdown">
-						<i class="fas fa-ellipsis-h dropbtn" onclick="myFunction(this);"></i>
-						<div id="myDropdown1" class="dropdown-content">
-							<ul>
-								<li><a class="dropdown-item" href="<?php echo BASE_URL; ?>students/update/<?php echo $c['id']; ?>"><i class="fas fa-edit"></i> Editar</a></li>
-								<li><a class="dropdown-item" href="<?php echo BASE_URL; ?>students/destroy/<?php echo $c['id']; ?>" onclick="return confirm('Deseja realmente excluir?')"><i class="fas fa-trash-alt"></i> Deletar</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		<?php endforeach; ?>
-
-
-	<?php else : ?>
-		<div class="flash_info my-2">
-			<p><i class="fas fa-exclamation-circle fa-2x px"></i></p><span>Nenhum registro encontrado!</span>
-		</div>
-		<div class="search_pg">
-			<form class="w-100" action="<?php echo BASE_URL; ?>students/search">
-				<p class="mb-l">Refaça sua pesquisa</p>
-				<span class="mb-2"><input type="text" class="input-field-search" name="sp" id="sp" placeholder="Pesquisar Aluno" required></span>
-				<span><button type="submit"><i class="fas fa-search"></i> Pesquisar</button></span>
-			</form>
-		</div>
-	<?php endif; ?>
-
+	<span>
+		<a href="<?php echo BASE_URL; ?>dispatchers">Voltar</a>
+	</span>
 </div>
 
-<!-- Script Dropdown Itens -->
-<script src="<?php echo BASE_URL; ?>assets/js/dropdown_itens.js"></script>
+<div class="menu-data">
+	<div class="menu_data--left">
+		<div>
+			<a class="btn btn--data-menu" href="<?php echo BASE_URL; ?>dispatchers/create"><i class="fa-solid fa-plus"></i> Novo</a>
+		</div>
+	</div>
+	<div class="menu_data--right">
+		<form class="form-search-right" method="post" action="<?php echo BASE_URL; ?>dispatchers/search">
+			<span class="mb-2 w-100">
+				<input type="text" class="w-100" name="search" id="search" placeholder="Pesquisar Despachante" required>
+			</span>
+		</form>
+	</div>
+</div>
+
+<!-- Cabeçalho da Tabela (Table Header) -->
+<?php if ($dispatchers) : ?>
+	<div class="table-header">
+		<div class="w-2/12">Nome do Despachante</div>
+		<div class="w-3/12">Razão Social</div>
+		<div class="w-2/12">Telefone</div>
+		<div class="w-2/12">Celular</div>
+		<div class="w-2/12">E-mail</div>
+		<div class="w-1/12"></div>
+	</div>
+
+
+	<!-- Dados da Tabela (Table Data) -->
+	<?php foreach ($dispatchers as $disp) : ?>
+		<div class="table-data">
+			<div class="w-2/12"><?php echo $disp['company_name']; ?></div>
+			<div class="w-3/12"><?php echo $disp['social_reason']; ?></div>
+			<div class="w-2/12"><?php echo $disp['phone']; ?></div>
+			<div class="w-2/12"><?php echo $disp['mobile_phone']; ?></div>
+			<div class="w-2/12"><?php echo $disp['email']; ?></div>
+			<div class="w-1/12 text-right">
+				<div class="text-sky-950">
+					<a class="mx-2" href="<?php echo BASE_URL; ?>dispatchers/update/<?php echo $disp['id']; ?>"><i class="fas fa-edit"></i></a>
+					<a href="<?php echo BASE_URL; ?>dispatchers/destroy/<?php echo $disp['id']; ?>" onclick="return confirm('Deseja realmente excluir?')"><i class="fas fa-trash-alt"></i></a>
+					</ul>
+				</div>
+			</div>
+		</div>
+	<?php endforeach; ?>
+
+<?php else : ?>
+	<div class="flash-info">
+		<p><i class="fas fa-exclamation-circle fa-2x px text-sky-700 px-2"></i></p><span> Nenhum registro encontrado!</span>
+	</div>
+<?php endif; ?>

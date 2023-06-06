@@ -16,124 +16,6 @@ class Dispatchers extends model
 		return $array;
 	}
 
-	// public function getListSeries($id, $school_id)
-	// {
-	// 	$array = array();
-
-	// 	$sql = $this->db->prepare("SELECT series_id FROM students WHERE id = :id AND school_id = :school_id");
-	// 	$sql->bindValue(":id", $id);
-	// 	$sql->bindValue(":school_id", $school_id);
-	// 	$sql->execute();
-
-	// 	if ($sql->rowCount() > 0) {
-	// 		$r = $sql->fetch();
-	// 	}
-
-	// 	$serie_id = $r['series_id'];
-
-	// 	$sql = $this->db->prepare("SELECT * FROM students_classes WHERE series_id = '$serie_id' AND school_id = :school_id");
-	// 	$sql->bindValue(":school_id", $school_id);
-	// 	$sql->execute();
-
-	// 	if ($sql->rowCount() > 0) {
-	// 		$array = $sql->fetchAll();
-	// 	}
-
-	// 	return $array;
-	// }
-
-	// public function getListEvaluations($offset, $school_id)
-	// {
-	// 	$array = array();
-
-	// 	$sql = $this->db->prepare("
-	// 		SELECT 
-	// 			students.*,
-	// 			students_classes.name_class_students as class_name,
-	// 			schools.school_name,
-	// 			series.series_name as series_name
-	// 		FROM 
-	// 			students 
-	// 		LEFT JOIN
-	// 			students_classes ON students.student_class_id = students_classes.id
-	// 		LEFT JOIN
-	// 			schools ON students.school_id = schools.id
-	// 		LEFT JOIN
-	// 			series ON students.series_id = series.id
-	// 		WHERE
-	// 			students.school_id = :school_id 
-	// 		AND
-	// 			students.evaluation_stage >= 1
-	// 		LIMIT $offset, 15");
-	// 	$sql->bindValue(":school_id", $school_id);
-	// 	$sql->execute();
-
-	// 	if ($sql->rowCount() > 0) {
-	// 		$array = $sql->fetchAll();
-	// 	}
-
-	// 	return $array;
-	// }
-
-	// public function getListAll($school_id)
-	// {
-	// 	$array = array();
-
-	// 	$sql = $this->db->prepare("
-	// 			SELECT 
-	// 				students.*,
-	// 				students_classes.name_class_students as class_name
-	// 			FROM 
-	// 				students 
-	// 			LEFT JOIN
-	// 				students_classes ON students.student_class_id = students_classes.id
-	// 			WHERE
-	// 				students.school_id = :school_id
-	// 		");
-	// 	$sql->bindValue(":school_id", $school_id);
-	// 	$sql->execute();
-
-	// 	if ($sql->rowCount() > 0) {
-	// 		$array = $sql->fetchAll();
-	// 	}
-
-	// 	return $array;
-	// }
-
-	// public function getListStudentsClass($student_class_id, $school_id)
-	// {
-	// 	$array = array();
-
-	// 	$sql = $this->db->prepare("
-	// 			SELECT 
-	// 				students.*,
-	// 				students_classes.name_class_students as class_name,
-	// 				schools.school_name as school_name,
-	// 				series.series_name as series_name
-	// 			FROM 
-	// 				students 
-	// 			LEFT JOIN
-	// 				students_classes ON students.student_class_id = students_classes.id
-	// 			LEFT JOIN
-	// 				schools ON students.school_id = schools.id
-	// 			LEFT JOIN
-	// 				series ON students.series_id = series.id
-	// 			WHERE
-	// 				students.school_id = :school_id AND
-	// 			students.student_class_id = :student_class_id
-	// 		");
-	// 	$sql->bindValue(":student_class_id", $student_class_id);
-	// 	$sql->bindValue(":school_id", $school_id);
-	// 	$sql->execute();
-
-	// 	if ($sql->rowCount() > 0) {
-	// 		$array = $sql->fetchAll();
-	// 	}
-
-	// 	return $array;
-	// }
-
-
 	public function getInfo($id)
 	{
 		$array = array();
@@ -159,8 +41,6 @@ class Dispatchers extends model
 		$row = $sql->fetch();
 
 		$r = $row['c'];
-
-
 
 		return $r;
 	}
@@ -212,9 +92,9 @@ class Dispatchers extends model
 	public function changeStatus($id, $status)
 	{
 		$sql = $this->db->prepare("UPDATE companies SET status = :status WHERE id = :id");
-        $sql->bindValue(":id", $id);
-        $sql->bindValue(":status", $status);
-        $sql->execute();
+		$sql->bindValue(":id", $id);
+		$sql->bindValue(":status", $status);
+		$sql->execute();
 	}
 
 	public function destroy($id)
@@ -222,6 +102,19 @@ class Dispatchers extends model
 		$sql = $this->db->prepare("DELETE FROM companies WHERE id = :id");
 		$sql->bindValue(":id", $id);
 		$sql->execute();
+	}
+
+	public function search($search)
+	{
+		$array = array();
+		$sql = $this->db->prepare("SELECT * FROM companies WHERE company_name LIKE '%$search%' OR social_reason LIKE '%$search%'");
+		$sql->execute();
+
+		if ($sql->rowCount() > 0) {
+			$array = $sql->fetchAll();
+		}
+
+		return $array;
 	}
 
 	// public function getInfoSeries($id, $school_id)

@@ -45,7 +45,7 @@
     }
 
     .menu-data {
-        @apply flex justify-between items-center py-1.5;
+        @apply flex justify-between items-center mb-2.5 py-1.5;
     }
 
     .table-header {
@@ -118,6 +118,10 @@
 
     #title-print{
         @apply hidden;
+    }
+
+    .warning{
+        @apply bg-red-400 text-white flex justify-center p-3 rounded-md;
     }
 
 }

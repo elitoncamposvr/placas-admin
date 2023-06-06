@@ -1,13 +1,11 @@
 <?php
-class reportsController extends controller
+class financialController extends controller
 {
-
     public function __construct()
     {
-
         $u = new Users();
         if ($u->isLogged() == false) {
-            header("Location: " . BASE_URL . "/login");
+            header("Location: " . BASE_URL . "login");
             exit;
         }
     }
@@ -17,7 +15,8 @@ class reportsController extends controller
         $data = array();
         $u = new Users();
         $u->setLoggedUser();
-        
-        $this->loadTemplate("reports", $data);
+        $data['users_list'] = $u->getList();
+
+        $this->loadTemplate('financial', $data);
     }
 }

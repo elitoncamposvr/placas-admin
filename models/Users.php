@@ -17,7 +17,7 @@ class Users extends model
 	public function doLogin($email, $password)
 	{
 
-		$sql = $this->db->prepare("SELECT * FROM users WHERE email = :email AND password = :password AND status = 1");
+		$sql = $this->db->prepare("SELECT * FROM users WHERE email = :email AND password = :password AND status = 1 AND type_user = 2");
 		$sql->bindValue(':email', $email);
 		$sql->bindValue(':password', md5($password));
 
@@ -111,21 +111,11 @@ class Users extends model
 		}
 	}
 
-	public function getList($school_id)
+	public function getList()
 	{
 		$array = array();
 
-		$sql = $this->db->prepare("
-			SELECT
-				users.*,
-				permission_groups.name as permission_name
-			FROM 
-				users
-			LEFT JOIN 
-				permission_groups ON permission_groups.id = users.id_group
-			WHERE 
-				users.school_id = :school_id");
-		$sql->bindValue(":school_id", $school_id);
+		$sql = $this->db->prepare("SELECT * FROM users WHERE type_user = 2");
 		$sql->execute();
 
 		if ($sql->rowCount() > 0) {
@@ -149,7 +139,7 @@ class Users extends model
 		return $array;
 	}
 
-	public function add($name_user, $email, $pass, $group, $school_id)
+	public function create($email, $pass, $status, $type_user, $id_company)
 	{
 		$sql = $this->db->prepare("SELECT COUNT(*) as c FROM users WHERE email = :email");
 		$sql->bindValue(":email", $email);
@@ -157,12 +147,12 @@ class Users extends model
 		$row = $sql->fetch();
 
 		if ($row['c'] == '0') {
-			$sql = $this->db->prepare("INSERT INTO users SET name_user = :name_user,  email = :email, password = :password, id_group = :id_group, school_id = :school_id");
-			$sql->bindValue(":name_user", $name_user);
+			$sql = $this->db->prepare("INSERT INTO users SET email = :email, password = :password, status = :status, type_user = :type_user, id_company = :id_company");
 			$sql->bindValue(":email", $email);
 			$sql->bindValue(":password", md5($pass));
-			$sql->bindValue(":id_group", $group);
-			$sql->bindValue(":school_id", $school_id);
+			$sql->bindValue(":status", $status);
+			$sql->bindValue(":type_user", $type_user);
+			$sql->bindValue(":id_company", $id_company);
 			$sql->execute();
 
 			return '1';
@@ -171,29 +161,20 @@ class Users extends model
 		}
 	}
 
-	public function edit($name_user, $pass, $group, $id, $school_id)
+	public function update($pass, $id)
 	{
-		$sql = $this->db->prepare("UPDATE users SET name_user = :name_user, id_group = :id_group WHERE id = :id AND school_id = :school_id");
-		$sql->bindValue(":name_user", $name_user);
-		$sql->bindValue(":id_group", $group);
-		$sql->bindValue("id", $id);
-		$sql->bindValue(":school_id", $school_id);
-		$sql->execute();
-
 		if (!empty($pass)) {
-			$sql = $this->db->prepare("UPDATE users SET password = :password WHERE id = :id AND school_id = :school_id");
+			$sql = $this->db->prepare("UPDATE users SET password = :password WHERE id = :id");
 			$sql->bindValue(":password", md5($pass));
 			$sql->bindValue(":id", $id);
-			$sql->bindValue("school_id", $school_id);
 			$sql->execute();
 		}
 	}
 
-	public function delete($id, $school_id)
+	public function destroy($id)
 	{
-		$sql = $this->db->prepare("DELETE FROM users WHERE id = :id AND school_id = :school_id");
+		$sql = $this->db->prepare("DELETE FROM users WHERE id = :id");
 		$sql->bindValue(":id", $id);
-		$sql->bindValue(':school_id', $school_id);
 		$sql->execute();
 	}
 

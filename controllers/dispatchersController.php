@@ -84,6 +84,21 @@ class dispatchersController extends controller
         $this->loadTemplate("dispatchers_update", $data);
     }
 
+    public function search()
+    {
+        $data = array();
+        $u = new Users();
+        $dispatchers = new Dispatchers();
+        $u->setLoggedUser();
+
+        if (isset($_POST['search']) && !empty($_POST['search'])) {
+            $search = addslashes($_POST['search']);
+            $data['dispatchers'] = $dispatchers->search($search);
+        }
+
+        $this->loadTemplate("dispatchers_search", $data);
+    }
+
     public function block($id)
     {
         $u = new Users();

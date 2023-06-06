@@ -15,17 +15,9 @@ class usersController extends controller
 		$data = array();
 		$u = new Users();
 		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
+		$data['users_list'] = $u->getList();
 
-		if ($u->hasPermission('users_view')) {
-			$data['users_list'] = $u->getList($u->getSchool());
-
-			$this->loadTemplate('users', $data);
-		} else {
-			header("Location: " . BASE_URL . "home/unauthorized");
-		}
+		$this->loadTemplate('users', $data);
 	}
 
 	public function create()
@@ -33,34 +25,20 @@ class usersController extends controller
 		$data = array();
 		$u = new Users();
 		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
 
-		if ($u->hasPermission('users_view')) {
+		if (isset($_POST['email']) && !empty($_POST['email'])) {
+			$email = addslashes($_POST['email']);
+			$pass = addslashes($_POST['password']);
 
-			$p = new Permissions();
+			$a = $u->create($email, $pass, 1, 2, 0);
 
-			if (isset($_POST['email']) && !empty($_POST['email'])) {
-				$name_user = addslashes($_POST['name_user']);
-				$email = addslashes($_POST['email']);
-				$pass = addslashes($_POST['password']);
-				$group = addslashes($_POST['group']);
-
-				$a = $u->add($name_user, $email, $pass, $group, $u->getSchool());
-
-				if ($a == '1') {
-					header("Location: " . BASE_URL . "users");
-				} else {
-					$data['error_msg'] = "Usuário já existe!";
-				}
+			if ($a == '1') {
+				header("Location: " . BASE_URL . "users");
+			} else {
+				$data['error'] = "E-mail já está cadastrado!";
 			}
-			$data['group_list'] = $p->getGroupList($u->getSchool());
-
-			$this->loadTemplate('users_create', $data);
-		} else {
-			header("Location: " . BASE_URL . "home/unauthorized");
 		}
+		$this->loadTemplate('users_create', $data);
 	}
 
 	public function update($id)
@@ -68,30 +46,18 @@ class usersController extends controller
 		$data = array();
 		$u = new Users();
 		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
-
-		if ($u->hasPermission('users_view')) {
-
-			$p = new Permissions();
-
-			if (isset($_POST['group']) && !empty($_POST['group'])) {
-				$name_user = addslashes($_POST['name_user']);
-				$pass = addslashes($_POST['password']);
-				$group = addslashes($_POST['group']);
-
-				$u->edit($name_user, $pass, $group, $id, $u->getSchool());
-				header("Location: " . BASE_URL . "users");
-			}
-			$data['user_info'] = $u->getInfo($id, $u->getSchool());
-			$data['group_list'] = $p->getGroupList($u->getSchool());
 
 
-			$this->loadTemplate('users_update', $data);
-		} else {
-			header("Location: " . BASE_URL . "home/unauthorized");
+		if (isset($_POST['password']) && !empty($_POST['password'])) {
+			$pass = addslashes($_POST['password']);
+
+
+			$u->update($pass, $id);
+			header("Location: " . BASE_URL . "users");
 		}
+		$data['user_info'] = $u->getInfo($id);
+
+		$this->loadTemplate('users_update', $data);
 	}
 
 	public function destroy($id)
@@ -99,20 +65,9 @@ class usersController extends controller
 		$data = array();
 		$u = new Users();
 		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
 
-		if ($u->hasPermission('users_view')) {
-			$p = new Permissions();
-
-			$u->delete($id, $u->getSchool());
-			header("Location: " . BASE_URL . "users");
-
-			$this->loadTemplate('users_edit', $data);
-		} else {
-			header("Location: " . BASE_URL . "home/unauthorized");
-		}
+		$u->destroy($id);
+		header("Location: " . BASE_URL . "users");
 	}
 
 	public function block($id)
@@ -120,13 +75,9 @@ class usersController extends controller
 		$data = array();
 		$u = new Users();
 		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
 
-		$status = 2;
-		$u->isBlock($id, $status);
-		header("Location: " . BASE_URL . "users/update/" . $id);
+		$u->isBlock($id, 2);
+		header("Location: " . BASE_URL . "users");
 	}
 
 
@@ -135,175 +86,171 @@ class usersController extends controller
 		$data = array();
 		$u = new Users();
 		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
 
-		$status = 1;
-		$u->isBlock($id, $status);
-		header("Location: " . BASE_URL . "users/update/" . $id);
+		$u->isBlock($id, 1);
+		header("Location: " . BASE_URL . "users");
 	}
 
 
-	public function permissions()
-	{
-		$data = array();
-		$u = new Users();
-		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
+	// public function permissions()
+	// {
+	// 	$data = array();
+	// 	$u = new Users();
+	// 	$u->setLoggedUser();
+	// 	$company = new Companies($u->getSchool());
+	// 	$data['company_name'] = $company->getName();
+	// 	$data['user_email'] = $u->getEmail();
 
-		if ($u->hasPermission('permissions_view')) {
+	// 	if ($u->hasPermission('permissions_view')) {
 
-			$permissions = new Permissions();
-			$data['permissions_list'] = $permissions->getList($u->getSchool());
+	// 		$permissions = new Permissions();
+	// 		$data['permissions_list'] = $permissions->getList($u->getSchool());
 
-			$this->loadTemplate('permissions', $data);
-		} else {
+	// 		$this->loadTemplate('permissions', $data);
+	// 	} else {
 
-			header("Location: " . BASE_URL . "home/unauthorized");
-		}
-	}
+	// 		header("Location: " . BASE_URL . "home/unauthorized");
+	// 	}
+	// }
 
-	public function permissions_group()
-	{
-		$data = array();
-		$u = new Users();
-		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
+	// public function permissions_group()
+	// {
+	// 	$data = array();
+	// 	$u = new Users();
+	// 	$u->setLoggedUser();
+	// 	$company = new Companies($u->getSchool());
+	// 	$data['company_name'] = $company->getName();
+	// 	$data['user_email'] = $u->getEmail();
 
-		if ($u->hasPermission('permissions_view')) {
+	// 	if ($u->hasPermission('permissions_view')) {
 
-			$permissions = new Permissions();
-			$data['permissions_groups_list'] = $permissions->getGroupList($u->getSchool());
+	// 		$permissions = new Permissions();
+	// 		$data['permissions_groups_list'] = $permissions->getGroupList($u->getSchool());
 
-			$this->loadTemplate('permissions_group', $data);
-		} else {
+	// 		$this->loadTemplate('permissions_group', $data);
+	// 	} else {
 
-			header("Location: " . BASE_URL . "home/unauthorized");
-		}
-	}
+	// 		header("Location: " . BASE_URL . "home/unauthorized");
+	// 	}
+	// }
 
 
-	public function permissions_add()
-	{
-		$data = array();
-		$u = new Users();
-		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
+	// public function permissions_add()
+	// {
+	// 	$data = array();
+	// 	$u = new Users();
+	// 	$u->setLoggedUser();
+	// 	$company = new Companies($u->getSchool());
+	// 	$data['company_name'] = $company->getName();
+	// 	$data['user_email'] = $u->getEmail();
 
-		if ($u->hasPermission('permissions_view')) {
-			$permissions = new Permissions();
+	// 	if ($u->hasPermission('permissions_view')) {
+	// 		$permissions = new Permissions();
 
-			if (isset($_POST['name']) && !empty($_POST['name'])) {
-				$pname = addslashes($_POST['name']);
-				$permission_title = addslashes($_POST['permission_title']);
-				$permissions->add($pname, $permission_title, $u->getSchool());
-				header("Location: " . BASE_URL . "users/permissions");
-			}
+	// 		if (isset($_POST['name']) && !empty($_POST['name'])) {
+	// 			$pname = addslashes($_POST['name']);
+	// 			$permission_title = addslashes($_POST['permission_title']);
+	// 			$permissions->add($pname, $permission_title, $u->getSchool());
+	// 			header("Location: " . BASE_URL . "users/permissions");
+	// 		}
 
-			$this->loadTemplate('permissions_add', $data);
-		} else {
-			header("Location: " . BASE_URL . "home/unauthorized");
-		}
-	}
+	// 		$this->loadTemplate('permissions_add', $data);
+	// 	} else {
+	// 		header("Location: " . BASE_URL . "home/unauthorized");
+	// 	}
+	// }
 
-	public function permissions_add_group()
-	{
-		$data = array();
-		$u = new Users();
-		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
+	// public function permissions_add_group()
+	// {
+	// 	$data = array();
+	// 	$u = new Users();
+	// 	$u->setLoggedUser();
+	// 	$company = new Companies($u->getSchool());
+	// 	$data['company_name'] = $company->getName();
+	// 	$data['user_email'] = $u->getEmail();
 
-		if ($u->hasPermission('permissions_view')) {
-			$permissions = new Permissions();
+	// 	if ($u->hasPermission('permissions_view')) {
+	// 		$permissions = new Permissions();
 
-			if (isset($_POST['name']) && !empty($_POST['name'])) {
-				$pname = addslashes($_POST['name']);
-				$plist = $_POST['permissions'];
+	// 		if (isset($_POST['name']) && !empty($_POST['name'])) {
+	// 			$pname = addslashes($_POST['name']);
+	// 			$plist = $_POST['permissions'];
 
-				$permissions->addGroup($pname, $plist, $u->getSchool());
-				header("Location: " . BASE_URL . "users/permissions_group");
-			}
+	// 			$permissions->addGroup($pname, $plist, $u->getSchool());
+	// 			header("Location: " . BASE_URL . "users/permissions_group");
+	// 		}
 
-			$data['permissions_list'] = $permissions->getList($u->getSchool());
+	// 		$data['permissions_list'] = $permissions->getList($u->getSchool());
 
-			$this->loadTemplate('permissions_addgroup', $data);
-		} else {
-			header("Location: " . BASE_URL . "home/unauthorized");
-		}
-	}
+	// 		$this->loadTemplate('permissions_addgroup', $data);
+	// 	} else {
+	// 		header("Location: " . BASE_URL . "home/unauthorized");
+	// 	}
+	// }
 
-	public function permissions_delete($id)
-	{
+	// public function permissions_delete($id)
+	// {
 
-		$data = array();
-		$u = new Users();
-		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
+	// 	$data = array();
+	// 	$u = new Users();
+	// 	$u->setLoggedUser();
+	// 	$company = new Companies($u->getSchool());
+	// 	$data['company_name'] = $company->getName();
+	// 	$data['user_email'] = $u->getEmail();
 
-		if ($u->hasPermission('permissions_view')) {
-			$permissions = new Permissions();
-			$permissions->delete($id);
-			header("Location: " . BASE_URL . "users/permissions");
-		} else {
-			header("Location: " . BASE_URL . "home/unauthorized");
-		}
-	}
+	// 	if ($u->hasPermission('permissions_view')) {
+	// 		$permissions = new Permissions();
+	// 		$permissions->delete($id);
+	// 		header("Location: " . BASE_URL . "users/permissions");
+	// 	} else {
+	// 		header("Location: " . BASE_URL . "home/unauthorized");
+	// 	}
+	// }
 
-	public function permissions_delete_group($id)
-	{
-		$data = array();
-		$u = new Users();
-		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
+	// public function permissions_delete_group($id)
+	// {
+	// 	$data = array();
+	// 	$u = new Users();
+	// 	$u->setLoggedUser();
+	// 	$company = new Companies($u->getSchool());
+	// 	$data['company_name'] = $company->getName();
+	// 	$data['user_email'] = $u->getEmail();
 
-		if ($u->hasPermission('permissions_view')) {
-			$permissions = new Permissions();
-			$permissions->deleteGroup($id);
-			header("Location: " . BASE_URL . "users/permissions_group");
-		} else {
-			header("Location: " . BASE_URL . "home/unauthorized");
-		}
-	}
+	// 	if ($u->hasPermission('permissions_view')) {
+	// 		$permissions = new Permissions();
+	// 		$permissions->deleteGroup($id);
+	// 		header("Location: " . BASE_URL . "users/permissions_group");
+	// 	} else {
+	// 		header("Location: " . BASE_URL . "home/unauthorized");
+	// 	}
+	// }
 
-	public function permissions_edit_group($id)
-	{
-		$data = array();
-		$u = new Users();
-		$u->setLoggedUser();
-		$company = new Companies($u->getSchool());
-		$data['company_name'] = $company->getName();
-		$data['user_email'] = $u->getEmail();
+	// public function permissions_edit_group($id)
+	// {
+	// 	$data = array();
+	// 	$u = new Users();
+	// 	$u->setLoggedUser();
+	// 	$company = new Companies($u->getSchool());
+	// 	$data['company_name'] = $company->getName();
+	// 	$data['user_email'] = $u->getEmail();
 
-		if ($u->hasPermission('permissions_view')) {
-			$permissions = new Permissions();
+	// 	if ($u->hasPermission('permissions_view')) {
+	// 		$permissions = new Permissions();
 
-			if (isset($_POST['name']) && !empty($_POST['name'])) {
-				$pname = addslashes($_POST['name']);
-				$plist = $_POST['permissions'];
+	// 		if (isset($_POST['name']) && !empty($_POST['name'])) {
+	// 			$pname = addslashes($_POST['name']);
+	// 			$plist = $_POST['permissions'];
 
-				$permissions->editGroup($pname, $plist, $id, $u->getSchool());
-				header("Location: " . BASE_URL . "users/permissions_group");
-			}
+	// 			$permissions->editGroup($pname, $plist, $id, $u->getSchool());
+	// 			header("Location: " . BASE_URL . "users/permissions_group");
+	// 		}
 
-			$data['permissions_list'] = $permissions->getList($u->getSchool());
-			$data['group_info'] = $permissions->getGroup($id, $u->getSchool());
+	// 		$data['permissions_list'] = $permissions->getList($u->getSchool());
+	// 		$data['group_info'] = $permissions->getGroup($id, $u->getSchool());
 
-			$this->loadTemplate('permissions_editgroup', $data);
-		} else {
-			header("Location: " . BASE_URL . "home/unauthorized");
-		}
-	}
+	// 		$this->loadTemplate('permissions_editgroup', $data);
+	// 	} else {
+	// 		header("Location: " . BASE_URL . "home/unauthorized");
+	// 	}
+	// }
 }
